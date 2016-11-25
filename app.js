@@ -4,42 +4,34 @@ $(document).ready(function() {
         $('body').append(div)
     }
 
-
-    function *gear(chars) {
-        var pos = 0
-        var len = chars.length-1
-        while(true){
-            yield chars[pos]
-            if (pos===len){
-                pos = 0
-            } else {
-                pos +=1
+    function *gear(chars, cnt) {
+        while (true) {
+            for (var chr of chars){
+                for (var i=0;i<cnt;i++){
+                    yield chr
+                }
             }
         }
     }
 
-    var abc = ['ABC','XYZ','123']
+    function *keyset(keys){
+        var n = keys.reduce((p, v)=>{return p * v.length}, 1)
+        var next = (prev, cur)=>{return prev + cur.next().value}
 
+        sets  = keys.map(function(chars, idx){
+            var repeat = (n / Math.pow(chars.length, idx + 1))
+            return gear(chars, repeat)
+        })
 
-    var possibles = function(keys){
-        var lengths = keys.map((v)=>{return v.length})
-        return lengths.reduce((p,v)=>{return p*v})-1
+        for (var i=0; i<n; i++){
+            yield sets.reduce(next,'')
+        }
     }
 
-    var keyset = abc.map(function(chars){
-        return gear(chars)
-    })
+    combinations = keyset(['ABCD','ABCD','ABCD','ABCD'])
 
-    turn = function(){
-        return keyset.reduce(
-            function(prev,cur){
-                return prev+cur.next().value
-            },'')
-    }
-
-
-    for (var i=0; i<=possibles(abc); i++){
-        out(turn())
+    for (var combo of combinations){
+        out(combo)
     }
 
 });
