@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="jquery-2.0.3.min.js"></script>
+        <script src='app.js'></script>
+    </head>
+    <body>
+
+    Experiment #1: Create a generator that iterates through all combinations of an arbitrary array of characters sets.
+    </br>
+    </br>
+    What's the point if you can download precalcuated tables of hash combinations?  A generator can do the same work, but without the complications of download a large file, etc.
+    </br>
+    </br>
+    This first attempt shows all the combinations of a four character key using only "ABCD"
+    </br>
+    </br>
+
+    </body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        out = (msg)=> {
+            var div = $('<div>').text(msg)
+            $('body').append(div)
+        }
+
+        function *gear(chars, cnt) {
+            while (true) {
+                for (var chr of chars){
+                    for (var i=0;i<cnt;i++){
+                        yield chr
+                    }
+                }
+            }
+        }
+
+        function *keyset(keys){
+            var n = keys.reduce((p, v)=>{return p * v.length}, 1)
+            var next = (prev, cur)=>{return prev + cur.next().value}
+
+            sets  = keys.map(function(chars, idx){
+                var repeat = (n / Math.pow(chars.length, idx + 1))
+                return gear(chars, repeat)
+            })
+
+            for (var i=0; i<n; i++){
+                yield sets.reduce(next,'')
+            }
+        }
+
+        combinations = keyset(['ABCD','ABCD','ABCD','ABCD'])
+
+        for (var combo of combinations){
+            out(combo)
+        }
+
+    });
+
+    </script>
+</html>
