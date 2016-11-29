@@ -28,10 +28,25 @@ $(document).ready(function() {
         }
     }
 
-    combinations = keyset(['ABCD','ABCD','ABCD','ABCD'])
+    SHA1_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
-    for (var combo of combinations){
-        out(combo)
-    }
+    SHA1_array = Array.from({length:40}).fill(SHA1_chars)
+
+
+    $('input#Go').click(function(e){
+        var start_num = $('input#start').val()
+        combinations = keyset(SHA1_array)
+
+        var i = 1
+        for (var combo of combinations){
+            if (i>=start_num){
+                out(combo)
+            }
+            if (i>start_num+10){
+                break
+            }
+            i+=1
+        }
+    })
 
 });
